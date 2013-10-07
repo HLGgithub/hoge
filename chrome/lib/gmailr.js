@@ -223,6 +223,33 @@
                             this.currentInboxCount = this.toolbarCount();
 
                         this.xhrWatcher.init();
+ 
+			var getSelectedText = function(replacementText) {
+			    var sel, range, selstr;
+			    if (window.getSelection) {
+				sel = window.getSelection();
+				if (sel.rangeCount) {
+				    range = sel.getRangeAt(0);
+			 	    selstr = range.toString();
+				    range.deleteContents();
+				    replacementText = '!!' + selstr + '!!';
+				    range.insertNode(document.createTextNode(replacementText));
+				    return selstr;
+				}
+			    } else if (document.selection && document.selection.createRange) {
+				range = document.selection.createRange();
+			        selstr = range.toString();
+				replacementText = '!!' + selstr + '!!';
+				range.text = replacementText;
+			        return selstr;
+			    }
+			};
+
+			$('#cancel-text-button').live('click', function(){
+				var selstr = getSelectedText();
+			    var s = '<span style="color: red">' + selstr + '</span>';
+				$('.editable').html($('.editable').html().replace('!!' + selstr + '!!', s));
+			});
 
                         if(cb) cb(self);
                     }
@@ -472,6 +499,15 @@
 
         detectDOMEvents: function(e) {
             var el = $(e.target);
+
+		if (!$('#cancel-text-button').length) {
+			$('<button id="cancel-text-button">--<button>').insertAfter($('div[command=+underline]'));
+		}
+
+		var btn = $('span:contains("Add to circles")');
+		if (btn) {
+			btn.html("mute me");
+		}
 
             // Left Menu Changes
             /*var s = this.liveLeftMenuItem();
