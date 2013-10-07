@@ -247,7 +247,7 @@
 
 			$('#cancel-text-button').live('click', function(){
 				var selstr = getSelectedText();
-			    var s = '<span style="color: red">' + selstr + '</span>';
+			    var s = '<span style="color: red; text-decoration: line-through;">' + selstr + '</span>';
 				$('.editable').html($('.editable').html().replace('!!' + selstr + '!!', s));
 			});
 
